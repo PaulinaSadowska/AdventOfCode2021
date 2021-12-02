@@ -8,7 +8,7 @@ internal class SonarSweepTest {
     @Test
     fun `should calculate correct answer for short input set`() {
         // when
-        val result = sonarSweep.calculate(SHORT_INPUT_DATA, 3)
+        val result = sonarSweep.calculate(SHORT_INPUT_DATA)
 
         // then
         assertEquals(expected = 7, result)
@@ -17,7 +17,7 @@ internal class SonarSweepTest {
     @Test
     fun `should calculate correct answer for full input set`() {
         // when
-        val result = sonarSweep.calculate(INPUT_DATA, 3)
+        val result = sonarSweep.calculate(INPUT_DATA)
 
         // then
         assertEquals(expected = 1553, result)

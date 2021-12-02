@@ -1,67 +1,45 @@
-class Dive {
+class Dive(private val submarineController: SubmarineController) {
 
-    fun calculate(fileName: String, submarine: SubmarineController): SubmarinePosition {
+    fun calculate(fileName: String): SubmarinePosition {
         val data = loadDataFromFile(fileName).map {
             val values = it.split(" ")
             DiveCommand(direction = values[0], value = values[1].toInt())
         }
-        return dive(data, submarine)
-    }
 
-    private fun dive(data: List<DiveCommand>, submarine: SubmarineController): SubmarinePosition {
-        data.forEach {
-            when (it.direction) {
-                "forward" -> submarine.forward(it.value)
-                "down" -> submarine.down(it.value)
-                "up" -> submarine.up(it.value)
-            }
+        return data.fold(SubmarinePosition()) { acc, curr ->
+            submarineController.dive(position = acc, command = curr)
         }
-        return submarine.getPosition()
     }
-
 
     class SubmarineControllerWithoutAim : SubmarineController {
 
-        private val position = SubmarinePosition()
-        override fun getPosition() = position
-
-        override fun forward(value: Int) {
-            position.horizontal += value
-        }
-
-        override fun down(value: Int) {
-            position.depth += value
-        }
-
-        override fun up(value: Int) {
-            position.depth -= value
+        override fun dive(position: SubmarinePosition, command: DiveCommand): SubmarinePosition {
+            when (command.direction) {
+                FORWARD -> position.horizontal += command.value
+                DOWN -> position.depth += command.value
+                UP -> position.depth -= command.value
+            }
+            return position
         }
     }
 
     class SubmarineControllerWithAim : SubmarineController {
 
-        private val position = SubmarinePosition()
-        override fun getPosition() = position
-
-        override fun forward(value: Int) {
-            position.horizontal += value
-            position.depth += value * position.aim
-        }
-
-        override fun down(value: Int) {
-            position.aim += value
-        }
-
-        override fun up(value: Int) {
-            position.aim -= value
+        override fun dive(position: SubmarinePosition, command: DiveCommand): SubmarinePosition {
+            when (command.direction) {
+                FORWARD -> {
+                    position.horizontal += command.value
+                    position.depth += command.value * position.aim
+                }
+                DOWN -> position.aim += command.value
+                UP -> position.aim -= command.value
+            }
+            return position
         }
     }
 
     interface SubmarineController {
-        fun forward(value: Int)
-        fun down(value: Int)
-        fun up(value: Int)
-        fun getPosition(): SubmarinePosition
+        fun dive(position: SubmarinePosition, command: DiveCommand): SubmarinePosition
     }
 
     data class DiveCommand(
@@ -75,6 +53,12 @@ class Dive {
         var aim: Int = 0,
     ) {
         fun finalResult() = horizontal * depth
+    }
+
+    companion object {
+        private const val FORWARD = "forward"
+        private const val UP = "up"
+        private const val DOWN = "down"
     }
 }
 

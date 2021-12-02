@@ -7,10 +7,10 @@ class SonarSweep {
 
     private fun sonarSweep(data: List<Int>, window: Int): Int {
         return data
-            .mapIndexed { index, current ->
+            .foldIndexed(0) { index, acc, current ->
                 val previous = data.getOrElse(index - window) { Int.MAX_VALUE }
-                if (current > previous) 1 else 0
-            }.reduce { acc, curr -> acc + curr }
+                acc + if (current > previous) 1 else 0
+            }
     }
 }
 

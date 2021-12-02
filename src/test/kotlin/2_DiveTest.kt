@@ -3,13 +3,13 @@ import kotlin.test.assertEquals
 
 internal class DiveTest {
 
-    private val dive = Dive()
-
     @Test
     fun `should calculate for short input`() {
-        
+        // given
+        val dive = Dive(Dive.SubmarineControllerWithoutAim())
+
         // when
-        val result = dive.calculate(SHORT_INPUT_DATA, Dive.SubmarineControllerWithoutAim())
+        val result = dive.calculate(SHORT_INPUT_DATA)
 
         // then
         assertEquals(15, result.horizontal)
@@ -19,8 +19,11 @@ internal class DiveTest {
 
     @Test
     fun `should calculate for full input`() {
+        // given
+        val dive = Dive(Dive.SubmarineControllerWithoutAim())
+
         // when
-        val result = dive.calculate(INPUT_DATA, Dive.SubmarineControllerWithoutAim())
+        val result = dive.calculate(INPUT_DATA)
 
         // then
         assertEquals(1817, result.horizontal)
@@ -30,8 +33,11 @@ internal class DiveTest {
 
     @Test
     fun `should calculate for short input (part 2)`() {
+        // given
+        val dive = Dive(Dive.SubmarineControllerWithAim())
+
         // when
-        val result = dive.calculate(SHORT_INPUT_DATA, Dive.SubmarineControllerWithAim())
+        val result = dive.calculate(SHORT_INPUT_DATA)
 
         // then
         assertEquals(15, result.horizontal)
@@ -41,8 +47,11 @@ internal class DiveTest {
 
     @Test
     fun `should calculate for full input (part 2)`() {
+        // given
+        val dive = Dive(Dive.SubmarineControllerWithAim())
+
         // when
-        val result = dive.calculate(INPUT_DATA, Dive.SubmarineControllerWithAim())
+        val result = dive.calculate(INPUT_DATA)
 
         // then
         assertEquals(1817, result.horizontal)
