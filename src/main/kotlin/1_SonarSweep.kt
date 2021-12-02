@@ -1,19 +1,14 @@
-
-
 fun main() {
-    println("Hello World!")
-
     val data = loadDataFromFile("1_input.txt").mapNotNull { it.toIntOrNull() }
-    println("size: "+ data.size)
+    println("num of data points: " + data.size)
+    println("result: ${sonarSweep(data)}")
+}
 
-    var increased = 0
-    data.forEachIndexed { index, element ->
-        if(index > 0){
-            if(element > data[index-1]){
-                increased++
-            }
-        }
-    }
 
-    println("result: $increased")
+fun sonarSweep(data: List<Int>): Int {
+    return data
+        .mapIndexed { index, current ->
+            val previous = data.getOrElse(index - 1) { Int.MAX_VALUE }
+            if (current > previous) 1 else 0
+        }.reduce { acc, curr -> acc + curr }
 }
