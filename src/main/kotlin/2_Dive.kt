@@ -1,63 +1,78 @@
 class Dive {
 
-    fun calculate(fileName: String): DiveResult {
+    fun calculate(fileName: String, submarine: SubmarineController): SubmarinePosition {
         val data = loadDataFromFile(fileName).map {
             val values = it.split(" ")
-            DiveData(direction = values[0], value = values[1].toInt())
+            DiveCommand(direction = values[0], value = values[1].toInt())
         }
-        return dive(data)
+        return dive(data, submarine)
     }
 
-    fun calculate2(fileName: String): DiveResult {
-        val data = loadDataFromFile(fileName).map {
-            val values = it.split(" ")
-            DiveData(direction = values[0], value = values[1].toInt())
-        }
-        return dive2(data)
-    }
-
-    private fun dive(data: List<DiveData>): DiveResult {
-        val diveResult = DiveResult()
+    private fun dive(data: List<DiveCommand>, submarine: SubmarineController): SubmarinePosition {
         data.forEach {
             when (it.direction) {
-                "forward" -> diveResult.horizontal += it.value
-                "down" -> diveResult.depth += it.value
-                "up" -> diveResult.depth -= it.value
+                "forward" -> submarine.forward(it.value)
+                "down" -> submarine.down(it.value)
+                "up" -> submarine.up(it.value)
             }
         }
-        return diveResult
+        return submarine.getPosition()
     }
 
-    private fun dive2(data: List<DiveData>): DiveResult {
-        val diveResult = DiveResult(0, 0)
-        data.forEach {
-            when (it.direction) {
-                "forward" -> {
-                    diveResult.horizontal += it.value
-                    diveResult.depth += it.value * diveResult.aim
-                }
-                "down" -> {
-                    //diveResult.depth += it.value
-                    diveResult.aim += it.value
-                }
-                "up" -> {
-                    //diveResult.depth -= it.value
-                    diveResult.aim -= it.value
-                }
-            }
+
+    class SubmarineControllerWithoutAim : SubmarineController {
+
+        private val position = SubmarinePosition()
+        override fun getPosition() = position
+
+        override fun forward(value: Int) {
+            position.horizontal += value
         }
-        return diveResult
+
+        override fun down(value: Int) {
+            position.depth += value
+        }
+
+        override fun up(value: Int) {
+            position.depth -= value
+        }
     }
 
-    data class DiveData(
+    class SubmarineControllerWithAim : SubmarineController {
+
+        private val position = SubmarinePosition()
+        override fun getPosition() = position
+
+        override fun forward(value: Int) {
+            position.horizontal += value
+            position.depth += value * position.aim
+        }
+
+        override fun down(value: Int) {
+            position.aim += value
+        }
+
+        override fun up(value: Int) {
+            position.aim -= value
+        }
+    }
+
+    interface SubmarineController {
+        fun forward(value: Int)
+        fun down(value: Int)
+        fun up(value: Int)
+        fun getPosition(): SubmarinePosition
+    }
+
+    data class DiveCommand(
         val direction: String,
         val value: Int
     )
 
-    data class DiveResult(
+    data class SubmarinePosition(
         var horizontal: Int = 0,
         var depth: Int = 0,
-        var aim: Int = 0
+        var aim: Int = 0,
     ) {
         fun finalResult() = horizontal * depth
     }

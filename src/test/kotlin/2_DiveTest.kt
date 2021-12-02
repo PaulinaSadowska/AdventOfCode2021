@@ -7,8 +7,9 @@ internal class DiveTest {
 
     @Test
     fun `should calculate for short input`() {
+        
         // when
-        val result = dive.calculate(SHORT_INPUT_DATA)
+        val result = dive.calculate(SHORT_INPUT_DATA, Dive.SubmarineControllerWithoutAim())
 
         // then
         assertEquals(15, result.horizontal)
@@ -19,7 +20,7 @@ internal class DiveTest {
     @Test
     fun `should calculate for full input`() {
         // when
-        val result = dive.calculate(INPUT_DATA)
+        val result = dive.calculate(INPUT_DATA, Dive.SubmarineControllerWithoutAim())
 
         // then
         assertEquals(1817, result.horizontal)
@@ -30,7 +31,7 @@ internal class DiveTest {
     @Test
     fun `should calculate for short input (part 2)`() {
         // when
-        val result = dive.calculate2(SHORT_INPUT_DATA)
+        val result = dive.calculate(SHORT_INPUT_DATA, Dive.SubmarineControllerWithAim())
 
         // then
         assertEquals(15, result.horizontal)
@@ -41,7 +42,7 @@ internal class DiveTest {
     @Test
     fun `should calculate for full input (part 2)`() {
         // when
-        val result = dive.calculate2(INPUT_DATA)
+        val result = dive.calculate(INPUT_DATA, Dive.SubmarineControllerWithAim())
 
         // then
         assertEquals(1817, result.horizontal)
