@@ -27,4 +27,27 @@ internal class SonarSweepTest {
         assertEquals(expected = 1553, result)
     }
 
+    @Test
+    fun `should calculate correct answer for short input set (part 2)`() {
+        // given
+        val data = loadDataFromFile("1_input_short.txt").mapNotNull { it.toIntOrNull() }
+
+        // when
+        val result = sonarSweep(data, window = 3)
+
+        // then
+        assertEquals(expected = 5, result)
+    }
+
+    @Test
+    fun `should calculate correct answer for full input set (part 2)`() {
+        // given
+        val data = loadDataFromFile("1_input.txt").mapNotNull { it.toIntOrNull() }
+
+        // when
+        val result = sonarSweep(data, window = 3)
+
+        // then
+        assertEquals(expected = 1597, result)
+    }
 }

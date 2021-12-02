@@ -5,10 +5,10 @@ fun main() {
 }
 
 
-fun sonarSweep(data: List<Int>): Int {
+fun sonarSweep(data: List<Int>, window: Int = 1): Int {
     return data
         .mapIndexed { index, current ->
-            val previous = data.getOrElse(index - 1) { Int.MAX_VALUE }
+            val previous = data.getOrElse(index - window) { Int.MAX_VALUE }
             if (current > previous) 1 else 0
         }.reduce { acc, curr -> acc + curr }
 }
