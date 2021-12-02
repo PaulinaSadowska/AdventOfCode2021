@@ -3,13 +3,12 @@ import kotlin.test.assertEquals
 
 internal class SonarSweepTest {
 
+    private val sonarSweep = SonarSweep()
+
     @Test
     fun `should calculate correct answer for short input set`() {
-        // given
-        val data = loadDataFromFile("1_input_short.txt").mapNotNull { it.toIntOrNull() }
-
         // when
-        val result = sonarSweep(data)
+        val result = sonarSweep.calculate(SHORT_INPUT_DATA, 3)
 
         // then
         assertEquals(expected = 7, result)
@@ -17,11 +16,8 @@ internal class SonarSweepTest {
 
     @Test
     fun `should calculate correct answer for full input set`() {
-        // given
-        val data = loadDataFromFile("1_input.txt").mapNotNull { it.toIntOrNull() }
-
         // when
-        val result = sonarSweep(data)
+        val result = sonarSweep.calculate(INPUT_DATA, 3)
 
         // then
         assertEquals(expected = 1553, result)
@@ -29,11 +25,8 @@ internal class SonarSweepTest {
 
     @Test
     fun `should calculate correct answer for short input set (part 2)`() {
-        // given
-        val data = loadDataFromFile("1_input_short.txt").mapNotNull { it.toIntOrNull() }
-
         // when
-        val result = sonarSweep(data, window = 3)
+        val result = sonarSweep.calculate(SHORT_INPUT_DATA, window = 3)
 
         // then
         assertEquals(expected = 5, result)
@@ -41,13 +34,15 @@ internal class SonarSweepTest {
 
     @Test
     fun `should calculate correct answer for full input set (part 2)`() {
-        // given
-        val data = loadDataFromFile("1_input.txt").mapNotNull { it.toIntOrNull() }
-
         // when
-        val result = sonarSweep(data, window = 3)
+        val result = sonarSweep.calculate(INPUT_DATA, window = 3)
 
         // then
         assertEquals(expected = 1597, result)
+    }
+
+    companion object {
+        private const val SHORT_INPUT_DATA = "1_input_short.txt"
+        private const val INPUT_DATA = "1_input.txt"
     }
 }
