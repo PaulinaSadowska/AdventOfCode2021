@@ -27,6 +27,28 @@ internal class DiveTest {
         assertEquals(1947824, result.finalResult())
     }
 
+    @Test
+    fun `should calculate for short input (part 2)`() {
+        // when
+        val result = dive.calculate2(SHORT_INPUT_DATA)
+
+        // then
+        assertEquals(15, result.horizontal)
+        assertEquals(60, result.depth)
+        assertEquals(900, result.finalResult())
+    }
+
+    @Test
+    fun `should calculate for full input (part 2)`() {
+        // when
+        val result = dive.calculate2(INPUT_DATA)
+
+        // then
+        assertEquals(1817, result.horizontal)
+        assertEquals(997833, result.depth)
+        assertEquals(1813062561, result.finalResult())
+    }
+
     companion object {
         private const val SHORT_INPUT_DATA = "2_input_short.txt"
         private const val INPUT_DATA = "2_input.txt"
