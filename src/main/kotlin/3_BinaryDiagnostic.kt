@@ -30,17 +30,18 @@ class BinaryDiagnostic {
 
     fun calculateLifeSupport(fileName: String): LifeSupport {
         val data = loadData(fileName)
+        val transposed = transpose(data)
 
-        val oxygen = calculateOxygen(data, transposeData(data))
-        val co2 = calculateCo2(data, transposeData(data))
+        val oxygen = calculateOxygen(data, transposed)
+        val co2 = calculateCo2(data, transposed)
 
         return LifeSupport(oxygen = oxygen.bytesToInt(), co2 = co2.bytesToInt())
     }
 
-    private fun calculateOxygen(notTransposed: List<List<Int>>, data: Array<IntArray>): List<Int> {
+    private fun calculateOxygen(notTransposed: List<List<Int>>, data: List<List<Int>>): List<Int> {
         val row = data.size
 
-        val indexes = data[0]
+        val indexes = data[0].toMutableList()
         val oxygen = MutableList(row) { 0 }
         oxygen[0] = 1
         data.forEachIndexed { index, element ->
@@ -70,7 +71,7 @@ class BinaryDiagnostic {
         return oxygen
     }
 
-    private fun calculateCo2(notTransposed: List<List<Int>>, data: Array<IntArray>): List<Int> {
+    private fun calculateCo2(notTransposed: List<List<Int>>, data: List<List<Int>>): List<Int> {
         val row = data.size
 
         val indexes: MutableList<Int> = data[0].map { if (it == 1) 0 else 1 }.toMutableList()
@@ -101,10 +102,10 @@ class BinaryDiagnostic {
         return co2
     }
 
-    private fun transposeData(matrix: List<List<Int>>): Array<IntArray> {
+    private fun transpose(matrix: List<List<Int>>): List<List<Int>> {
         val column = matrix[0].size
         val row = matrix.size
-        val transpose = Array(column) { IntArray(row) }
+        val transpose = MutableList(column) { MutableList(row) { 0 } }
         for (i in 0 until row) {
             for (j in 0 until column) {
                 transpose[j][i] = matrix[i][j]
