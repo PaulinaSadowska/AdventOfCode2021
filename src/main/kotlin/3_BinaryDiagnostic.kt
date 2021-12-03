@@ -4,23 +4,15 @@ class BinaryDiagnostic {
 
     fun calculatePowerConsumption(fileName: String): PowerConsumption {
         val data = loadData(fileName)
-        val rowSize = data[0].size
+        val transposed = transpose(data)
 
-        val numOfOnesInColumns = MutableList(rowSize) { 0 }
-        data.forEach { row ->
-            row.forEachIndexed { index, element ->
-                numOfOnesInColumns[index] += element
-            }
-        }
-
-        val halfOfDataSize = data.size / 2
-        println("numOfOnes= $numOfOnesInColumns (half = $halfOfDataSize)")
+        val numOfOnesInColumns = transposed.map { it.sum() }
 
         val mostCommonBits = numOfOnesInColumns.map {
-            if (it > halfOfDataSize) 1 else 0
+            if (it * 2 > data.size) 1 else 0
         }
         val leastCommonBits = numOfOnesInColumns.map {
-            if (it < halfOfDataSize) 1 else 0
+            if (it * 2 > data.size) 0 else 1
         }
         return PowerConsumption(
             gamma = mostCommonBits.bytesToInt(),
@@ -32,18 +24,22 @@ class BinaryDiagnostic {
         val data = loadData(fileName)
         val transposed = transpose(data)
 
-        val oxygen = calculateOxygen(data, transposed)
-        val co2 = calculateCo2(data, transposed)
+        val oxygen = calculateLifeSupportFactor(data, transposed) { if (it) 1 else 0 }
+        val co2 = calculateLifeSupportFactor(data, transposed) { if (it) 0 else 1 }
 
         return LifeSupport(oxygen = oxygen.bytesToInt(), co2 = co2.bytesToInt())
     }
 
-    private fun calculateOxygen(notTransposed: List<List<Int>>, data: List<List<Int>>): List<Int> {
+    private fun calculateLifeSupportFactor(
+        notTransposed: List<List<Int>>,
+        data: List<List<Int>>,
+        bitCriteria: (Boolean) -> Int
+    ): List<Int> {
         val row = data.size
 
-        val indexes = data[0].toMutableList()
-        val oxygen = MutableList(row) { 0 }
-        oxygen[0] = 1
+        val indexes = data[0].map { bitCriteria(it == 1) }.toMutableList()
+        val result = MutableList(row) { 0 }
+        result[0] = bitCriteria(true)
         data.forEachIndexed { index, element ->
             var sum = 0
             if (index != 0) {
@@ -52,54 +48,19 @@ class BinaryDiagnostic {
                         sum += element2
                     }
                 }
-                oxygen[index] = if (sum * 2 >= indexes.sum()) {
-                    1
-                } else 0
+                result[index] = bitCriteria(sum * 2 >= indexes.sum())
                 if (indexes.sum() == 1) {
                     val i = indexes.indexOf(1)
                     return notTransposed[i]
                 }
                 element.forEachIndexed { index2, element2 ->
-                    if (element2 != oxygen[index]) {
-                        indexes[index2] = 0
-                    }
-                }
-                sum = 0
-            }
-        }
-        println(oxygen.joinToString(" "))
-        return oxygen
-    }
-
-    private fun calculateCo2(notTransposed: List<List<Int>>, data: List<List<Int>>): List<Int> {
-        val row = data.size
-
-        val indexes: MutableList<Int> = data[0].map { if (it == 1) 0 else 1 }.toMutableList()
-        val co2 = MutableList(row) { 0 }
-        co2[0] = 0
-        data.forEachIndexed { index, element ->
-            var sumOfOnes = 0
-            if (index != 0) {
-                element.forEachIndexed { index2, element2 ->
-                    if (indexes[index2] == 1) {
-                        sumOfOnes += element2
-                    }
-                }
-                co2[index] = if (sumOfOnes * 2 >= indexes.sum()) {
-                    0
-                } else 1
-                if (indexes.sum() == 1) {
-                    val i = indexes.indexOf(1)
-                    return notTransposed[i]
-                }
-                element.forEachIndexed { index2, element2 ->
-                    if (element2 != co2[index]) {
+                    if (element2 != result[index]) {
                         indexes[index2] = 0
                     }
                 }
             }
         }
-        return co2
+        return result
     }
 
     private fun transpose(matrix: List<List<Int>>): List<List<Int>> {
