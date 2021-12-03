@@ -1,5 +1,6 @@
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 internal class BinaryDiagnosticTest {
 
@@ -38,6 +39,17 @@ internal class BinaryDiagnosticTest {
         assertEquals(230, result.result)
     }
 
+    @Test
+    fun `should calculate for short 2 input (part 2)`() {
+        // when
+        val result = diagnostic.calculateLifeSupport(SHORT_INPUT_DATA)
+
+        // then
+        assertEquals(23, result.oxygen)
+        assertEquals(10, result.co2)
+        assertEquals(230, result.result)
+    }
+
 
     @Test
     fun `should calculate for full input (part 2)`() {
@@ -45,9 +57,9 @@ internal class BinaryDiagnosticTest {
         val result = diagnostic.calculateLifeSupport(INPUT_DATA)
 
         // then
-        assertEquals(3065, result.oxygen)
-        assertEquals(0, result.co2)
-        assertEquals(0, result.result)
+        assertEquals(2235, result.oxygen)
+        assertEquals(451, result.co2)
+        assertEquals(1007985, result.result)
     }
 
     companion object {
