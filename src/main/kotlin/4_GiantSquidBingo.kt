@@ -1,25 +1,33 @@
 class GiantSquidBingo {
 
-    fun calculate(fileName: String): Int {
+    fun calculate(fileName: String, firstPlace: Boolean = true): Int {
         val data = loadData(fileName)
-        return playBingo(data)
+        return playBingo(data, firstPlace)
     }
 
-    private fun playBingo(data: Bingo): Int {
+    private fun playBingo(data: Bingo, firstPlace: Boolean): Int {
         val numbers = data.numbers
         val boards = data.boards
+        val activePlayers = MutableList(boards.size) { true }
 
         numbers.forEach { number ->
-            println("number: $number")
-            boards.forEach { board ->
-                board.board.forEachIndexed { i, row ->
-                    val index = row.indexOf(number)
-                    if (index >= 0) {
-                        board.selection[i][index] = 1
-                        if (board.hasBingo()) {
-                            val sum = board.sumOfUnmarkedNumbers()
-                            println("sum: $sum")
-                            return sum * number
+            boards.forEachIndexed { boardIndex, board ->
+                if (activePlayers[boardIndex]) {
+                    board.board.forEachIndexed { i, row ->
+                        val index = row.indexOf(number)
+                        if (index >= 0) {
+                            board.selection[i][index] = 1
+                            if (board.hasBingo()) {
+                                println("Bingo for number: $number")
+                                if (firstPlace) {
+                                    return board.sumOfUnmarkedNumbers() * number
+                                } else {
+                                    if (activePlayers.count { !it } >= boards.size - 1) {
+                                        return board.sumOfUnmarkedNumbers() * number
+                                    }
+                                }
+                                activePlayers[boardIndex] = false
+                            }
                         }
                     }
                 }
@@ -34,20 +42,11 @@ class GiantSquidBingo {
         val boards: List<Board>
     )
 
-    data class Board(
-        val board: List<List<Int>>,
-    ) {
+    data class Board(val board: List<List<Int>>) {
+
         val selection = MutableList(board.size) { MutableList(board[0].size) { 0 } }
 
-        fun hasBingo(): Boolean {
-            val row = hasBingoInRow()
-            val column = hasBingoInColumn()
-            val bingo = row || column
-            if (bingo) {
-                println("BINGO! for row: $row, column: $column")
-            }
-            return bingo
-        }
+        fun hasBingo() = hasBingoInRow() || hasBingoInColumn()
 
         private fun hasBingoInRow(): Boolean {
             return selection.map { it.sum() }.any { it >= board.size }
@@ -55,21 +54,22 @@ class GiantSquidBingo {
 
         private fun hasBingoInColumn(): Boolean {
             val sums = MutableList(selection.size) { 0 }
-            selection.forEach {
-                it.forEachIndexed { index, e ->
-                    sums[index] += e
+            selection.forEach { row ->
+                row.forEachIndexed { index, element ->
+                    sums[index] += element
                 }
             }
             return sums.any { it >= selection.size }
         }
 
         fun sumOfUnmarkedNumbers(): Int {
-            val sums = board.mapIndexed { iRow, row ->
+            return board.mapIndexed { iRow, row ->
                 row.foldIndexed(0) { i, acc, curr ->
                     acc + curr * if (selection[iRow][i] == 1) 0 else 1
                 }
+            }.sum().also {
+                println("sum of unmarked: $it")
             }
-            return sums.sum()
         }
     }
 
