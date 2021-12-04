@@ -6,23 +6,22 @@ class GiantSquidBingo {
     }
 
     private fun playBingo(data: Bingo, firstPlace: Boolean): Int {
-        val numbers = data.numbers
-        val boards = data.boards
-        val activePlayers = MutableList(boards.size) { true }
+        val numOfBoards = data.boards.size
+        val activePlayers = MutableList(numOfBoards) { true }
 
-        numbers.forEach { number ->
-            boards.forEachIndexed { boardIndex, board ->
+        data.numbers.forEach { number ->
+            data.boards.forEachIndexed { boardIndex, board ->
                 if (activePlayers[boardIndex]) {
-                    board.board.forEachIndexed { i, row ->
-                        val index = row.indexOf(number)
-                        if (index >= 0) {
-                            board.selection[i][index] = 1
+                    board.board.forEachIndexed { rowIndex, row ->
+                        val indexOfNumber = row.indexOf(number)
+                        if (indexOfNumber >= 0) {
+                            board.selection[rowIndex][indexOfNumber] = 1
                             if (board.hasBingo()) {
                                 println("Bingo for number: $number")
                                 if (firstPlace) {
                                     return board.sumOfUnmarkedNumbers() * number
                                 } else {
-                                    if (activePlayers.count { !it } >= boards.size - 1) {
+                                    if (activePlayers.count { !it } >= numOfBoards - 1) {
                                         return board.sumOfUnmarkedNumbers() * number
                                     }
                                 }
