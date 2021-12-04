@@ -12,7 +12,16 @@ internal class GiantSquidBingoTest {
         val result = bingo.calculate(SHORT_INPUT_DATA)
 
         // then
-        assertEquals(4512, result) // 188 * 24 = 4512.
+        assertEquals(4512, result) // 188 * 24.
+    }
+
+    @Test
+    fun `should calculate for full input`() {
+        // when
+        val result = bingo.calculate(INPUT_DATA)
+
+        // then
+        assertEquals(25410, result) // 726 * 35
     }
 
     companion object {
