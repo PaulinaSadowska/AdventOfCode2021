@@ -44,30 +44,29 @@ class GiantSquidBingo {
 
     data class Board(val board: List<List<Int>>) {
 
-        val selection = MutableList(board.size) { MutableList(board[0].size) { 0 } }
+        private val size = board.size
+        val selection = MutableList(size) { MutableList(size) { 0 } }
 
         fun hasBingo() = hasBingoInRow() || hasBingoInColumn()
 
         private fun hasBingoInRow(): Boolean {
-            return selection.map { it.sum() }.any { it >= board.size }
+            return selection.map { it.sum() }.any { it >= size }
         }
 
         private fun hasBingoInColumn(): Boolean {
-            val sums = MutableList(selection.size) { 0 }
-            selection.forEach { row ->
-                row.forEachIndexed { index, element ->
-                    sums[index] += element
+            return (0 until size).map { i ->
+                (0 until size).fold(initial = 0) { acc, j ->
+                    acc + selection[j][i]
                 }
-            }
-            return sums.any { it >= selection.size }
+            }.any { it >= size }
         }
 
         fun sumOfUnmarkedNumbers(): Int {
-            return board.mapIndexed { iRow, row ->
-                row.foldIndexed(0) { i, acc, curr ->
-                    acc + curr * if (selection[iRow][i] == 1) 0 else 1
-                }
-            }.sum().also {
+            return (0 until size).sumOf { i ->
+                (0 until size).fold(initial = 0) { acc, j ->
+                    acc + board[i][j] * if (selection[i][j] == 1) 0 else 1
+                } as Int
+            }.also {
                 println("sum of unmarked: $it")
             }
         }
