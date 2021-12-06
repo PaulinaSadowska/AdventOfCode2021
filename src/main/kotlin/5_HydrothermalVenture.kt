@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 class HydrothermalVenture {
 
     fun calculate(fileName: String, diagonal: Boolean = false): Int {
@@ -17,6 +19,13 @@ class HydrothermalVenture {
                 line.verticalRange().forEach { y ->
                     result[y][line.start.x] += 1
                 }
+            } else if (diagonal && line.isDiagonal()) {
+                val len = abs(line.end.x - line.start.x)
+                val stepX = if(line.start.x <= line.end.x) 1 else -1
+                val stepY = if(line.start.y <= line.end.y) 1 else -1
+                (0..len).forEach { i ->
+                    result[line.start.y + i * stepY][line.start.x + i * stepX] += 1
+                }
             }
         }
 
@@ -32,6 +41,7 @@ class HydrothermalVenture {
     ) {
         fun isVertical() = start.x == end.x
         fun isHorizontal() = start.y == end.y
+        fun isDiagonal() = abs(start.y - end.y) == abs(start.x - end.x)
         fun horizontalRange() = if (end.x > start.x) {
             start.x..end.x
         } else {

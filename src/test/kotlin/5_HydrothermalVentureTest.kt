@@ -38,7 +38,7 @@ class HydrothermalVentureTest {
         val result = hydro.calculate(INPUT_DATA, diagonal = true)
 
         // then
-        assertEquals(-2, result)
+        assertEquals(20898, result)
     }
 
     companion object {
