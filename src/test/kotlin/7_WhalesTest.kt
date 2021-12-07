@@ -8,7 +8,7 @@ internal class WhalesTest {
     @Test
     fun `should calculate for short input`() {
         // when
-        val result = whales.calculate(SHORT_INPUT_DATA)
+        val result = whales.calculate(SHORT_INPUT_DATA, Whales.Part.FIRST)
 
         // then
         assertEquals(2, result.position)
@@ -18,11 +18,31 @@ internal class WhalesTest {
     @Test
     fun `should calculate for full input`() {
         // when
-        val result = whales.calculate(INPUT_DATA)
+        val result = whales.calculate(INPUT_DATA, Whales.Part.FIRST)
 
         // then
         assertEquals(362, result.position)
         assertEquals(342534, result.fuel)
+    }
+
+    @Test
+    fun `should calculate for short input (part 2)`() {
+        // when
+        val result = whales.calculate(SHORT_INPUT_DATA, Whales.Part.SECOND)
+
+        // then
+        assertEquals(5, result.position)
+        assertEquals(168, result.fuel)
+    }
+
+    @Test
+    fun `should calculate for full input (part 2)`() {
+        // when
+        val result = whales.calculate(INPUT_DATA, Whales.Part.SECOND)
+
+        // then
+        assertEquals(474, result.position)
+        assertEquals(94004208, result.fuel)
     }
 
     companion object {
