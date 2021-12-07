@@ -10,7 +10,7 @@ class Lanternfish {
         data.forEach {
             generations[it] = generations.getOrDefault(it, 0) + 1
         }
-        (1..numOfDays).forEach { day ->
+        (1..numOfDays).forEach { _ ->
             val newCount = generations.getOrDefault(key = 0, defaultValue = 0)
             generations[9] = newCount
             generations[7] = generations.getOrDefault(7, 0) + newCount
