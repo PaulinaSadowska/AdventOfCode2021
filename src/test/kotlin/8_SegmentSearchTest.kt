@@ -33,16 +33,26 @@ class SegmentSearchTest{
     }
 
     @Test
+    fun `should calculate for very short input (part 2)`() {
+        // when
+        val result = search.calculateSumOfOutput(VERY_SHORT_INPUT_DATA)
+
+        // then
+        assertEquals(5353, result)
+    }
+
+    @Test
     fun `should calculate for full input (part 2)`() {
         // when
         val result = search.calculateSumOfOutput(INPUT_DATA)
 
         // then
-        assertEquals(-1, result)
+        assertEquals(987553, result)
     }
 
     companion object {
         private const val SHORT_INPUT_DATA = "8_input_short.txt"
+        private const val VERY_SHORT_INPUT_DATA = "8_input_very_short.txt"
         private const val INPUT_DATA = "8_input.txt"
     }
 }
