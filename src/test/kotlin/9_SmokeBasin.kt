@@ -23,6 +23,23 @@ class SmokeBasinTest {
         assertEquals(506, result)
     }
 
+    @Test
+    fun `should calculate for short input (part 2)`() {
+        // when
+        val result = smokeBasin.measureBiggestBasins(SHORT_INPUT_DATA)
+
+        // then
+        assertEquals(1137, result)
+    }
+
+    @Test
+    fun `should calculate for full input (part 2)`() {
+        // when
+        val result = smokeBasin.measureBiggestBasins(INPUT_DATA)
+
+        // then
+        assertEquals(-1, result)
+    }
 
     companion object {
         private const val SHORT_INPUT_DATA = "9_input_short.txt"

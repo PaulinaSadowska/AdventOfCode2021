@@ -3,20 +3,41 @@ class SmokeBasin {
     fun sumLowPoints(fileName: String): Int {
         val smokeMatrix = loadData(fileName)
 
-        return smokeMatrix.foldIndexed(0) { rowIndex, acc, row ->
-            acc + row.indices.fold(0) { columnAcc, columnIndex ->
+        return findLowPoints(smokeMatrix).fold(0) { acc, point ->
+            acc + smokeMatrix[point.row][point.column] + 1
+        }
+    }
+
+    fun measureBiggestBasins(fileName: String): Int {
+        val smokeMatrix = loadData(fileName)
+
+        val lowPoints = findLowPoints(smokeMatrix)
+
+        return 0
+    }
+
+    private fun findLowPoints(
+        smokeMatrix: List<List<Int>>,
+    ): List<Point> {
+        return smokeMatrix.flatMapIndexed { rowIndex, row ->
+            row.indices.mapNotNull { columnIndex ->
                 val element = row[columnIndex]
-                columnAcc + if (
+                if (
                     element < row.getOrMax(columnIndex - 1) &&
                     element < row.getOrMax(columnIndex + 1) &&
                     element < smokeMatrix.getOrMax(columnIndex, rowIndex - 1) &&
                     element < smokeMatrix.getOrMax(columnIndex, rowIndex + 1)
                 ) {
-                    element + 1
-                } else 0
+                    Point(rowIndex, columnIndex)
+                } else null
             }
         }
     }
+
+    data class Point(
+        val row: Int,
+        val column: Int
+    )
 
     private fun List<Int>.getOrMax(index: Int) = getOrElse(index) { Int.MAX_VALUE }
 
